@@ -1,0 +1,3 @@
+fmpy
+numpy
+pyprecice>=2.0

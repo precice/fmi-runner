@@ -1,0 +1,12 @@
+Metadata-Version: 1.2
+Name: fmiprecice
+Version: 0.1.0
+Summary: A tool to co-simulate FMU models with the coupling library preCICE.
+Home-page: https://github.com/precice/fmi-runner
+Author: Leonard Willeke
+Author-email: lwilleke@online.de
+License: LGPL-3.0
+Description: # FMI-Runner
+        
+Platform: UNKNOWN
+Requires-Python: >=3.0
