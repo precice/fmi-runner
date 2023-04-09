@@ -10,7 +10,7 @@ setup(
     name = 'fmiprecice',
     version = '0.1.0',
     author = "Leonard Willeke",
-    author_email = "lwilleke@online.de",
+    author_email = "st150067@stud.uni-stuttgart.de",
     description = "A tool to co-simulate FMU models with the coupling library preCICE.",
     license = "LGPL-3.0",
     url = "https://github.com/precice/fmi-runner",

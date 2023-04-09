@@ -2,9 +2,7 @@
 
 A Runner tool to enable co-simulations with FMU models via the coupling library [preCICE](https://github.com/precice/precice).
 
-## Installation 
-
-### Required dependencies
+## Required dependencies
 
 Ensure that the following dependencies are installed:
 
@@ -14,21 +12,35 @@ Ensure that the following dependencies are installed:
 * [numpy](https://numpy.org/install/)
 * [fmpy](https://fmpy.readthedocs.io/en/latest/install/)
 
-### Build and install the Runner using pip
+## Installation 
 
-After cloning this repository, go to the project directory `fmi-runner` and run `pip3 install --user .`. 
-If you want to be able to update the Runner by simply pulling this repository, run `pip3 install --user -e .`.
+First, clone this repository and open a terminal in the `fmi-runner` directory.
 
-### Build and install the Runner using Python
+To use **pip** for the installation, run the command:
 
-After cloning this repository, go to the project directory `fmi-runner` and run `python setup.py install --user`.
+```bash
+pip3 install --user -e .
+```
 
-## Running a simulation
+The editable flag `-e` allows you to update the Runner by simply pulling the repository.
 
-The Runner is called from the terminal with the command `fmiprecice`. It takes two input files, one with settings for the FMU simulation and one with settings for preCICE. Start the runner by calling
+To use **Python** for the installation, run the command:
+
+```bash
+python setup.py install --user
+```
+
+## Usage
+
+The Runner is called from the terminal with the command `fmiprecice`. It takes two input files, one with settings for the FMU simulation and one with settings for preCICE. Start the runner by pointing to the input files:
 
 ```bash
 fmiprecice ./fmi-settings.json ./precice-settings.json
 ```
 
-Have a look at the preCICE [Oscillator tutorial](https://github.com/precice/tutorials/tree/master/oscillator) for a first complete setup with FMU model and setting files. 
+You can find more information about the Runner, its abilities and limitations in [1]. The preCICE [Oscillator tutorial](https://github.com/precice/tutorials/tree/master/oscillator) will feature a first complete setup with FMU model and setting files soon. 
+
+## References
+
+[1] L. Willeke, A preCICE-FMI Runner to couple controller models to PDEs, Master Thesis, University of Stuttgart, 2023 (Publication pending)
+
