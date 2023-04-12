@@ -24,3 +24,6 @@ Each simulation run creates two files containing position and velocity of the tw
 
 The result files are compared to the expected results `expected-result-Mass-Left.csv` and `expected-result-Mass-Right.csv`.
 
+## License
+
+The FMU model `Oscillator.fmu` used for this test is based on the [Reference-FMUs](https://github.com/modelica/Reference-FMUs) from the Modelica Association Project "FMI", which are released under the [2-Clause BSD License](https://github.com/precice/fmi-runner/thirdparty/LICENSE.txt). 
