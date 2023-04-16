@@ -12,7 +12,7 @@ This project contains the runner script `fmiprecice` to couple FMU models with o
 * [preCICE](https://precice.org/installation-overview.html), v2
 * [pyprecice: Python language bindings for preCICE](https://github.com/precice/python-bindings)
 * [NumPy](https://numpy.org/install/)
-* [FMPy](https://fmpy.readthedocs.io/en/latest/install/)
+* [FMPy](https://fmpy.readthedocs.io/en/latest/install/) (tested for v0.3.13)
 
 ## Installation 
 
@@ -40,7 +40,7 @@ The Runner is called from the terminal with the command `fmiprecice`. It takes t
 fmiprecice ./fmi-settings.json ./precice-settings.json
 ```
 
-You can find more information about the runner, its abilities, and its limitations in [1]. This version of the [oscillator tutorial](https://github.com/LeonardWilleke/precice-tutorials/tree/create-fmu-oscillator-v2/oscillator) features a first complete setup with FMU model and setting files for preCICE v2. 
+You can find more information about the runner, its abilities, and its limitations in [1]. This adaption of the [oscillator tutorial](https://github.com/LeonardWilleke/precice-tutorials/tree/create-fmu-oscillator-v2/oscillator) features a first complete setup with FMU model and setting files. 
 
 ## References
 
