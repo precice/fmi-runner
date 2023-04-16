@@ -40,7 +40,7 @@ The Runner is called from the terminal with the command `fmiprecice`. It takes t
 fmiprecice ./fmi-settings.json ./precice-settings.json
 ```
 
-You can find more information about the runner, its abilities, and its limitations in [1]. The [oscillator tutorial](https://precice.org/tutorials-oscillator.html) will feature a first complete setup with FMU model and setting files soon. 
+You can find more information about the runner, its abilities, and its limitations in [1]. This version of the [oscillator tutorial](https://github.com/LeonardWilleke/precice-tutorials/tree/create-fmu-oscillator-v2/oscillator) features a first complete setup with FMU model and setting files for preCICE v2. 
 
 ## References
 
