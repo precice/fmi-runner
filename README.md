@@ -11,8 +11,8 @@ This project contains the runner script `fmiprecice` to couple FMU models with o
 * Python 3 or higher
 * [preCICE](https://precice.org/installation-overview.html), v2
 * [pyprecice: Python language bindings for preCICE](https://github.com/precice/python-bindings)
-* [numpy](https://numpy.org/install/)
-* [fmpy](https://fmpy.readthedocs.io/en/latest/install/)
+* [NumPy](https://numpy.org/install/)
+* [FMPy](https://fmpy.readthedocs.io/en/latest/install/)
 
 ## Installation 
 
@@ -24,7 +24,7 @@ To use **pip** for the installation, run the command:
 pip3 install --user -e .
 ```
 
-The editable flag `-e` allows you to update the preICE-FMI Runner by pulling the repository.
+The editable flag `-e` allows you to update the preCICE-FMI Runner by pulling the repository.
 
 To use **Python** for the installation, run the command:
 
