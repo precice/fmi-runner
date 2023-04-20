@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fmiModelDescription
+  fmiVersion="1.0"
+  modelName="Dummy"
+  modelIdentifier="Dummy"
+  description="A Dummy FMU for testing. The Dummy takes a value read_data and adds an increment of 1 to it during every timestep. The result is stored in the variable write_data. Please note: The Model Exchange version of this FMU has not been implemented. Use the Co-Simulation version of the FMU or implement the model."
+  generationTool="Reference FMUs (development build)"
+  guid="{1AE5E10D-9521-4DE3-80B9-D0EAAA7D5AF1}"
+  numberOfContinuousStates="1"
+  numberOfEventIndicators="1">
+
+  <DefaultExperiment startTime="0" stopTime="1"/>
+
+  <ModelVariables>
+    <ScalarVariable name="time" valueReference="0" causality="internal" variability="continuous" description="Simulation time">
+    <Real/></ScalarVariable>
+    <ScalarVariable name="read_data" valueReference="1" causality="internal" variability="parameter" description="Read data">
+    <Real start="0.0" unit="kg"/></ScalarVariable>
+    <ScalarVariable name="write_data" valueReference="2" causality="internal" variability="parameter" description="Write data, which is obtained as write_data = read_data + increment">
+    <Real start="0.0"/></ScalarVariable>
+    <ScalarVariable name="increment" valueReference="3" causality="internal" variability="constant" description="The increment added during every time step">
+    <Real start="1.0"/></ScalarVariable>
+  </ModelVariables>
+
+</fmiModelDescription>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fmiModelDescription
+  fmiVersion="3.0"
+  modelName="Dummy"
+  description="A Dummy FMU for testing. The Dummy takes a value read_data and adds an increment of 1 to it during every timestep. The result is stored in the variable write_data."
+  generationTool="Reference FMUs (development build)"
+  instantiationToken="{1AE5E10D-9521-4DE3-80B9-D0EAAA7D5AF1}">
+
+  <ModelExchange
+    modelIdentifier="Dummy"
+    canGetAndSetFMUstate="true"
+    canSerializeFMUstate="false"/>
+
+  <CoSimulation
+    modelIdentifier="Dummy"
+    canGetAndSetFMUstate="true"
+    canSerializeFMUstate="false"
+    canHandleVariableCommunicationStepSize="true"
+    providesIntermediateUpdate="false"
+    canReturnEarlyAfterIntermediateUpdate="false"
+    fixedInternalStepSize="1e-3"
+    hasEventMode="true"/>
+
+  <UnitDefinitions>
+    <Unit name="m/s">
+      <BaseUnit m="1" s="-1" />
+    </Unit>
+  </UnitDefinitions>
+
+  <LogCategories>
+    <Category name="logEvents" description="Log events"/>
+    <Category name="logStatusError" description="Log error messages"/>
+  </LogCategories>
+
+  <DefaultExperiment startTime="0" stopTime="1" stepSize="1e-3"/>
+
+  <ModelVariables>
+    <Float64 name="time" valueReference="0" causality="independent" variability="continuous" description="Simulation time"/>
+    <Float64 name="read_data" valueReference="1" causality="parameter" variability="tunable" initial="exact" start="0"  description="Read data"/>
+    <Float64 name="write_data" valueReference="2" causality="parameter" variability="tunable" initial="exact" start="0"  description="Write data, which is obtained as write_data = read_data + increment"/>
+    <Float64 name="increment" valueReference="3" causality="parameter" variability="fixed" initial="exact" start="1"  description="The increment added during every time step"/>
+  </ModelVariables>
+  
+  <ModelStructure>
+    <Output valueReference="2"/>
+  </ModelStructure>
+
+</fmiModelDescription>

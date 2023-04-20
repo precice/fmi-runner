@@ -1,0 +1,16 @@
+{
+    "model_params": {
+        "read_data": 0,
+        "write_data": 0,
+        "increment": 1
+    },
+    
+    "simulation_params": {
+        "fmu_file_name": "../Dummy.fmu",
+        "output_file_name": "./output/test-SolverOne.csv",
+        "output": ["write_data"],
+        "fmu_read_data_names": ["read_data"],
+        "fmu_write_data_names": ["write_data"],
+        "fmu_instance_name": "SolverOne"
+    }
+}

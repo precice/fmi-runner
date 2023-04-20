@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fmiModelDescription
+  fmiVersion="2.0"
+  modelName="Dummy"
+  description="A Dummy FMU for testing. The Dummy takes a value read_data and adds an increment of 1 to it during every timestep. The result is stored in the variable write_data."
+  generationTool="Reference FMUs (development build)"
+  guid="{1AE5E10D-9521-4DE3-80B9-D0EAAA7D5AF1}"
+  numberOfEventIndicators="1">
+
+  <ModelExchange
+    modelIdentifier="Dummy">
+    <SourceFiles>
+      <File name="all.c"/>
+    </SourceFiles>
+  </ModelExchange>
+
+  <CoSimulation
+    modelIdentifier="Dummy"
+    canHandleVariableCommunicationStepSize="true"
+    canNotUseMemoryManagementFunctions="true"
+    canGetAndSetFMUstate="true"
+    canSerializeFMUstate="false">
+    <SourceFiles>
+      <File name="all.c"/>
+    </SourceFiles>
+  </CoSimulation>
+
+  <UnitDefinitions>
+    <Unit name="m/s">
+      <BaseUnit m="1" s="-1" />
+    </Unit>
+
+  </UnitDefinitions>
+
+  <LogCategories>
+    <Category name="logEvents" description="Log events"/>
+    <Category name="logStatusError" description="Log error messages"/>
+  </LogCategories>
+
+  <DefaultExperiment startTime="0" stopTime="1" stepSize="1e-3"/>
+
+  <ModelVariables>
+    <ScalarVariable name="read_data" valueReference="1" causality="parameter" variability="tunable" initial="exact" description="Read data">
+    <Real start="0.0"/></ScalarVariable>
+    <ScalarVariable name="write_data" valueReference="2" causality="parameter" variability="tunable" initial="exact" description="Write data, which is obtained as write_data = read_data + increment">
+    <Real start="0.0"/></ScalarVariable>
+    <ScalarVariable name="increment" valueReference="3" causality="parameter" variability="fixed" initial="exact" description="The increment added during every time step">
+    <Real start="1.0"/></ScalarVariable>
+  </ModelVariables>
+
+  <ModelStructure>
+    <Outputs> 
+      <Unknown index="2"/>
+    </Outputs>
+  </ModelStructure>
+
+</fmiModelDescription>
