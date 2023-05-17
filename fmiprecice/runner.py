@@ -233,7 +233,7 @@ def main():
             # Save checkpoint
             state_cp = fmu.getFMUState()
             t_cp = t
-            
+
             interface.mark_action_fulfilled(precice.action_write_iteration_checkpoint())
 
         # Compute current time step size
