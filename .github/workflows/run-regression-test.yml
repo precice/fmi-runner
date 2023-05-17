@@ -26,13 +26,12 @@ jobs:
       - name: Install fmiprecice
         run: |
             pip3 install --user .
-            export PATH=/github/home/.local/bin
 
       - name: Run coupling of two FMU dummies
         timeout-minutes: 3
         run: |
           cd tests/
-          bash SolverOne/run.sh & bash SolverTwo/run.sh
+          python3 ../fmiprecice/runner.py SolverOne/fmi-settings.json SolverOne/precice-settings.json & python3 ../fmiprecice/runner.py SolverTwo/fmi-settings.json SolverTwo/precice-settings.json
 
       - name: Check the result
         timeout-minutes: 3
