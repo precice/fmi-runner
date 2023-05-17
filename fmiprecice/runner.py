@@ -154,7 +154,7 @@ def main():
         for i in range(len(signal_names)):
             tpl = tuple([signal_names[i], type(signal_data[0][i])])
             dtype.append(tpl)
-        signals = np.array([tuple(i) for i in signal_data],dtype=dtype)
+        signals = np.array([tuple(i) for i in signal_data], dtype=dtype)
     except BaseException:
         signals = None
 
@@ -229,7 +229,7 @@ def main():
                                 "Please implement getFMUstate() and setFMUstate() in FMU "
                                 "and set the according flag in ModelDescription.xml. "
                                 "Alternatively, choose an explicit coupling scheme.")
-            
+
             # Save checkpoint
             state_cp = fmu.getFMUState()
             t_cp = t
@@ -252,7 +252,7 @@ def main():
         input.apply(t)
 
         # Compute next time step
-        if is_fmi1 or is_fmi2: 
+        if is_fmi1 or is_fmi2:
             fmu.setReal(vr_read, read_data)
             fmu.doStep(t, dt)
             result = fmu.getReal(vr_write)
@@ -275,10 +275,10 @@ def main():
         precice_dt = interface.advance(dt)
 
         if interface.is_action_required(precice.action_read_iteration_checkpoint()):
-            
+
             fmu.setFMUState(state_cp)
             t = t_cp
-            
+
             interface.mark_action_fulfilled(precice.action_read_iteration_checkpoint())
 
         else:
