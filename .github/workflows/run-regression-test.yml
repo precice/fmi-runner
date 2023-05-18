@@ -2,10 +2,10 @@ name: Run dummy test case
 on:
   push:
     branches:
-      - "*"
+      - "main"
   pull_request:
     branches:
-      - "*"
+      - "main"
 jobs:  
   run_fmu_dummy:
     name: Run FMU dummy
