@@ -1,7 +1,7 @@
 {
     "coupling_params": {
         "participant_name": "SolverTwo",
-        "config_file_name": "../precice-config.xml",
+        "config_file_name": "./precice-config.xml",
         "mesh_name": "MeshTwo",
         "write_data": {"name": "dataTwo", "type": "scalar"},
         "read_data": {"name": "dataOne", "type": "scalar"}
