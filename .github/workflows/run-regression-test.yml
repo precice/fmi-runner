@@ -27,11 +27,11 @@ jobs:
         run: |
             pip3 install --user .
 
-      - name: Run coupling of two FMU dummies
+      - name: Run coupling of two Dummy FMUs
         timeout-minutes: 3
         run: |
           cd tests/
-          python3 ../fmiprecice/runner.py SolverOne/fmi-settings.json SolverOne/precice-settings.json & python3 ../fmiprecice/runner.py SolverTwo/fmi-settings.json SolverTwo/precice-settings.json
+          cd SolverOne/ && python3 ../../fmiprecice/runner.py ./fmi-settings.json ./precice-settings.json & cd SolverTwo/ && python3 ../../fmiprecice/runner.py ./fmi-settings.json ./precice-settings.json
 
       - name: Check the result
         timeout-minutes: 3
