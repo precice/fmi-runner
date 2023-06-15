@@ -12,4 +12,4 @@ Please report any bugs or issues [here](https://github.com/precice/fmi-runner/is
 
 The concept and design of the FMI runner is described in:
 
-L. Willeke, A preCICE-FMI Runner to couple controller models to PDEs, Master Thesis, University of Stuttgart, 2023 (Publication pending) **add OPUS link and / or the paper**
+L. Willeke, [A preCICE-FMI Runner to couple controller models to PDEs]( http://dx.doi.org/10.18419/opus-13130), Master Thesis, University of Stuttgart, 2023

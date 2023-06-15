@@ -165,11 +165,22 @@ Current limitations of the FMI runner software are:
 
 ## How to cite
 
-If you are using the Runner, pĺease consider citing the Thesis:
+If you are using the FMI runner, pĺease consider citing the following Thesis:
 
-**Add a nice info box with link to Thesis and Bibtex download**
+```bibtex
+@misc{
+    Willeke:2023,
+    author   = {Willeke, Leonard},
+    title    = {A preCICE-FMI Runner to Couple Controller Models to PDEs},
+    school   = {University of Stuttgart},
+    type     = {Master thesis},
+    doi      = {10.18419/opus-13130},
+    year     = {2023}
+},
+
+```
 
 ## References
 
-[1] L. Willeke, A preCICE-FMI Runner to couple controller models to PDEs, Master Thesis, University of Stuttgart, 2023 (Publication pending)
+[1] L. Willeke, [A preCICE-FMI Runner to couple controller models to PDEs](https://doi.org/10.18419/opus-13130), Master Thesis, University of Stuttgart, 2023
 
