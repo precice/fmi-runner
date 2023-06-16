@@ -1,6 +1,6 @@
 ---
 title: The FMI runner
-permalink: tooling-fmi-runner-overview.html
+permalink: tooling-fmi-runner.html
 keywords: tooling, fmi, runner, fmi-settings, precice-settings
 summary: A tool to couple FMUs to PDE-based solvers using preCICE.
 ---
