@@ -2,10 +2,11 @@ name: autopep8
 on:
   push:
     branches:
-      - "main"
+      - main
+      - develop
   pull_request:
     branches:
-      - "main"
+      - "*"
 jobs:
   autopep8:
     runs-on: ubuntu-latest
