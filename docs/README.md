@@ -1,15 +1,15 @@
 ---
-title: The FMI runner
+title: FMI runner
 permalink: tooling-fmi-runner.html
 keywords: tooling, fmi, runner, fmi-settings, precice-settings
-summary: A tool to couple FMUs to PDE-based solvers using preCICE.
+summary: A tool to execute FMUs and couple them to PDE-based solvers using preCICE.
 ---
 
 ## What is this?
 
-The [Functional Mock-Up Interface](https://fmi-standard.org/) (FMI) is a standard for the exchange of dynamic simulation models. Currently, it is the de-facto industry standard for co-simulation. The models implementing the FMI standard are called Functional Mock-Up Units (FMU).
+The [Functional Mock-Up Interface](https://fmi-standard.org/) (FMI) is a standard for the exchange of dynamic simulation models. Currently, it is the de-facto industry standard for co-simulation. Models implementing the FMI standard are called Functional Mock-Up Units (FMU).
 
-This tool contains the runner script `fmiprecice` to couple FMU models with other simulation tools via the coupling library [preCICE](https://precice.org/). The runner serves as an importer for the FMU to steer the simulation. Additionally, it calls the preCICE library to communicate and coordinate with other solvers. 
+The preCICE-FMI runner contains the script `fmiprecice` to couple FMU models with other simulation tools via [preCICE](https://precice.org/). The runner serves as an importer for the FMU to steer the simulation. Additionally, the runner calls the preCICE library to communicate and coordinate with other solvers. 
 
 ![img](images/precice-fmi-runner-setup.png)
 
@@ -30,7 +30,7 @@ Read on to find out how to install and configure the runner. More information ab
 Before you start the installation, make sure you have installed the following packages:
 
 * Python 3 or higher
-* [preCICE](https://precice.org/installation-overview.html), v2
+* [preCICE](https://precice.org/installation-overview.html)
 * [pyprecice: Python language bindings for preCICE](https://github.com/precice/python-bindings)
 * [NumPy](https://numpy.org/install/)
 * [FMPy](https://fmpy.readthedocs.io/en/latest/install/) (tested for v0.3.13)
@@ -76,7 +76,7 @@ You're good to go! Read on to learn how to configure the FMI runner or [run your
 
 ## Configuration
 
-We use two settings files to configure the software to the specific simulation case.
+We use two settings files to configure the software for a specific simulation case.
 
 ### Configure the FMU
 
@@ -124,13 +124,11 @@ Let's have a closer look at the specific dictionaries:
     }
 ```
 
-{% disclaimer %}
-The runner v0.1 can not deal with FMU vectors. All FMU variables need to be scalars. Besides that, any data type implemented in the FMU (integer, float, boolean, string) is supported.
-{% enddisclaimer %}
+{% note %}
+Version v0.1 of the runner cannot deal with FMU vectors. All FMU variables need to be scalars. Besides that, however, any data type implemented in the FMU (integer, float, boolean, string) is supported.
+{% endnote %}
 
 Optionally, you can choose variables in `output` that are tracked and stored as a timeseries in `output_file_name`.
-
-
 **model_params**: Use this to set internal parameters before the start of the simulation. In this example, the parameters `apply_filter` and `spring_coeff` are set. The keys of this dictionary are the names of specific FMU variables.
 
 **initial_conditions**: Use this to set initial conditions for internal parameters. Again, the keys of this dictionary are the names of specific FMU variables.
@@ -139,7 +137,7 @@ Optionally, you can choose variables in `output` that are tracked and stored as 
 
 ### Configure the coupling
 
-The file `precice-settings.json` is used to configure the coupling with preCICE. It consist of one dictionary **coupling_params**.
+The file `precice-settings.json` is used to configure the coupling with preCICE. It consists of one dictionary **coupling_params**.
 
 ```json
 {
@@ -153,7 +151,7 @@ The file `precice-settings.json` is used to configure the coupling with preCICE.
 }
 ```
 
-The `participant_name` and `mesh_name` need to match the entries in the `precice-config.xml`. The same is true for `write_data` and `read_data`, which control the data exchange. The `type` can be set to `scalar` or `vector`.
+`participant_name` and `mesh_name` need to match the entries in `precice-config.xml`. The same is true for `write_data` and `read_data`, which control the data exchange. `type` can be set to `scalar` or `vector`.
 
 ## Limitations
 
@@ -176,8 +174,7 @@ If you are using the FMI runner, pĺease consider citing the following Thesis:
     type     = {Master thesis},
     doi      = {10.18419/opus-13130},
     year     = {2023}
-},
-
+}
 ```
 
 ## References
