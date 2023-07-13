@@ -15,30 +15,29 @@ import json
 
 # Define functions
 
-def precice_read_data(interface, data_type, read_data_id, vertex_id):
+def precice2_read_data(participant, data_type, read_data_id, vertex_id):
     """
     Reads data from preCICE. The preCICE API call depends on the data type, scalar or vector.
     """
 
-    if data_type == "scalar":
-        read_data = interface.read_scalar_data(read_data_id, vertex_id)
-    elif data_type == "vector":
-        read_data = interface.read_vector_data(read_data_id, vertex_id)
-    else:
-        raise Exception("Please choose data type from: scalar, vector.")
+    if is_precice2:
+        if data_type == "scalar":
+            read_data = participant.read_scalar_data(read_data_id, vertex_id)
+        elif data_type == "vector":
+            read_data = participant.read_vector_data(read_data_id, vertex_id)
 
     return read_data
 
 
-def precice_write_data(interface, data_type, write_data_id, vertex_id, write_data):
+def precice2_write_data(participant, data_type, write_data_id, vertex_id, write_data):
     """
     Writes data to preCICE. The preCICE API call depends on the data type, scalar or vector.
     """
 
     if data_type == "scalar":
-        write_data = interface.write_scalar_data(write_data_id, vertex_id, write_data)
+        write_data = participant.write_scalar_data(write_data_id, vertex_id, write_data)
     elif data_type == "vector":
-        write_data = interface.write_vector_data(write_data_id, vertex_id, write_data)
+        write_data = participant.write_vector_data(write_data_id, vertex_id, write_data)
     else:
         raise Exception("Please choose data type from: scalar, vector.")
 
@@ -49,7 +48,7 @@ def main():
 
     - Load settings from json files
     - Load FMU model and prepare the simulation
-    - Initialize the preCICE interface
+    - Create an object of the preCICE participant
     - Run the coupled simulation
     - Store the results
     - Terminate FMU model and preCICE
@@ -166,87 +165,174 @@ def main():
     solver_process_index = 0
     solver_process_size = 1
     num_vertices = 1
+    
+    # Determine version of preCICE (currently still returns v2 for pyprecice-develop-3.0.0)
+    #is_precice2 = (precice.get_version_information().decode()[0] == "2")
+    #is_precice3 = (precice.get_version_information().decode()[0] == "3")
+    is_precice2 = False
+    is_precice3 = True
 
-    # Initialize interface
-    interface = precice.Interface(
-        precice_data["coupling_params"]["participant_name"],
-        precice_data["coupling_params"]["config_file_name"],
-        solver_process_index,
-        solver_process_size
-    )
+    
+    if is_precice2:
+        # Create the participant
+        participant = precice.Interface(
+            precice_data["coupling_params"]["participant_name"],
+            precice_data["coupling_params"]["config_file_name"],
+            solver_process_index,
+            solver_process_size
+        )
+        
+        mesh_id = participant.get_mesh_id(precice_data["coupling_params"]["mesh_name"])
+        dimensions = participant.get_dimensions()
 
-    mesh_id = interface.get_mesh_id(precice_data["coupling_params"]["mesh_name"])
-    dimensions = interface.get_dimensions()
+        vertices = np.zeros((num_vertices, dimensions))
+        read_data = np.zeros((num_vertices, dimensions))
+        write_data = np.zeros((num_vertices, dimensions))
 
-    vertices = np.zeros((num_vertices, dimensions))
-    read_data = np.zeros((num_vertices, dimensions))
-    write_data = np.zeros((num_vertices, dimensions))
+        vertex_id = participant.set_mesh_vertices(mesh_id, vertices)
+        read_data_id = participant.get_data_id(precice_data["coupling_params"]["read_data"]["name"], mesh_id)
+        write_data_id = participant.get_data_id(precice_data["coupling_params"]["write_data"]["name"], mesh_id)
+        read_data_type = precice_data["coupling_params"]["read_data"]["type"]
+        write_data_type = precice_data["coupling_params"]["write_data"]["type"]
 
-    vertex_id = interface.set_mesh_vertices(mesh_id, vertices)
-    read_data_id = interface.get_data_id(precice_data["coupling_params"]["read_data"]["name"], mesh_id)
-    write_data_id = interface.get_data_id(precice_data["coupling_params"]["write_data"]["name"], mesh_id)
-    read_data_type = precice_data["coupling_params"]["read_data"]["type"]
-    write_data_type = precice_data["coupling_params"]["write_data"]["type"]
+        # check entries for data types
+        if read_data_type not in ["scalar", "vector"]:
+            raise Exception("Wrong data type for read data in the precice settings file. Please choose from: scalar, vector")
+        if write_data_type not in ["scalar", "vector"]:
+            raise Exception("Wrong data type for write data in the precice settings file. Please choose from: scalar, vector")
 
-    # check entries for data types
-    if read_data_type not in ["scalar", "vector"]:
-        raise Exception("Wrong data type for read data in the precice settings file. Please choose from: scalar, vector")
-    if write_data_type not in ["scalar", "vector"]:
-        raise Exception("Wrong data type for write data in the precice settings file. Please choose from: scalar, vector")
+        # initial value for write data
+        if write_data_type == "scalar":
+            write_data = fmu_write_data_init[0]
+        elif write_data_type == "vector":
+            write_data = np.array(fmu_write_data_init)
 
-    # initial value for write data
-    if write_data_type == "scalar":
-        write_data = fmu_write_data_init[0]
-    elif write_data_type == "vector":
-        write_data = np.array(fmu_write_data_init)
+        precice_dt = participant.initialize()
+        my_dt = precice_dt  # use my_dt < precice_dt for subcycling, necessary here?
 
-    precice_dt = interface.initialize()
-    my_dt = precice_dt  # use my_dt < precice_dt for subcycling
+        # write initial data
+        if participant.is_action_required(precice.action_write_initial_data()):
+            precice2_write_data(participant, write_data_type, write_data_id, vertex_id, write_data)
+            participant.mark_action_fulfilled(precice.action_write_initial_data())
 
-    # write initial data
-    if interface.is_action_required(precice.action_write_initial_data()):
-        precice_write_data(interface, write_data_type, write_data_id, vertex_id, write_data)
-        interface.mark_action_fulfilled(precice.action_write_initial_data())
+        participant.initialize_data()
+        
+    elif is_precice3:
+        # Create the participant
+        participant = precice.Participant(
+            precice_data["coupling_params"]["participant_name"],
+            precice_data["coupling_params"]["config_file_name"],
+            solver_process_index,
+            solver_process_size
+        )
 
-    interface.initialize_data()
+        mesh_name = precice_data["coupling_params"]["mesh_name"]
+        read_data_name = precice_data["coupling_params"]["read_data"]["name"]
+        write_data_name = precice_data["coupling_params"]["write_data"]["name"]
+        
+        # Is this correct? Only use one of the two data vectors to determine dimension for both?
+        dimensions = participant.get_data_dimensions(mesh_name, read_data_name)
+        vertices = np.zeros((num_vertices, dimensions))
+        read_data = np.zeros((num_vertices, dimensions))
+        write_data = np.zeros((num_vertices, dimensions))
+
+        vertex_id = participant.set_mesh_vertices(mesh_name, vertices)        
+
+        # check entries for data types
+        read_data_type = precice_data["coupling_params"]["read_data"]["type"]
+        write_data_type = precice_data["coupling_params"]["write_data"]["type"]
+        if read_data_type not in ["scalar", "vector"]:
+            raise Exception("Wrong data type for read data in the precice settings file. Please choose from: scalar, vector")
+        if write_data_type not in ["scalar", "vector"]:
+            raise Exception("Wrong data type for write data in the precice settings file. Please choose from: scalar, vector")
+
+        # initial value for write data
+        if write_data_type == "scalar":
+            write_data = fmu_write_data_init[0]
+        elif write_data_type == "vector":
+            write_data = np.array(fmu_write_data_init)
+
+        # write initial data
+        if participant.requires_initial_data():
+            participant.write_data(mesh_name, write_data_name, vertex_id, write_data)
+        
+        participant.initialize()
+
 
     recorder = Recorder(fmu=fmu, modelDescription=model_description, variableNames=output_names)
 
     t = 0
 
     recorder.sample(t, force=False)
+    
 
-    while interface.is_coupling_ongoing():
-        if interface.is_action_required(precice.action_write_iteration_checkpoint()):
+    while participant.is_coupling_ongoing():
+        
+        # Wrapper function instead of if / else?
+        if is_precice2:    
+            if participant.is_action_required(precice.action_write_iteration_checkpoint()): # v3: Wrapper function?
 
-            # Check if model has the appropiate functionalities
-            if is_fmi1:
-                raise Exception("Implicit coupling not possible because FMU model with FMI1 can't reset state. "
-                                "Please update model to FMI2 or FMI3. "
-                                "Alternatively, choose an explicit coupling scheme.")
-            if not can_get_and_set_fmu_state:
-                raise Exception("Implicit coupling not possible because FMU model can't reset state. "
-                                "Please implement getFMUstate() and setFMUstate() in FMU "
-                                "and set the according flag in ModelDescription.xml. "
-                                "Alternatively, choose an explicit coupling scheme.")
+                # Check if model has the appropiate functionalities
+                if is_fmi1:
+                    raise Exception("Implicit coupling not possible because FMU model with FMI1 can't reset state. "
+                                    "Please update model to FMI2 or FMI3. "
+                                    "Alternatively, choose an explicit coupling scheme.")
+                if not can_get_and_set_fmu_state:
+                    raise Exception("Implicit coupling not possible because FMU model can't reset state. "
+                                    "Please implement getFMUstate() and setFMUstate() in FMU "
+                                    "and set the according flag in ModelDescription.xml. "
+                                    "Alternatively, choose an explicit coupling scheme.")
 
-            # Save checkpoint
-            state_cp = fmu.getFMUState()
-            t_cp = t
+                # Save checkpoint
+                state_cp = fmu.getFMUState()
+                t_cp = t
 
-            interface.mark_action_fulfilled(precice.action_write_iteration_checkpoint())
+                participant.mark_action_fulfilled(precice.action_write_iteration_checkpoint())
 
+        elif is_precice3:
+            if participant.requires_writing_checkpoint():
+
+                # Check if model has the appropiate functionalities
+                if is_fmi1:
+                    raise Exception("Implicit coupling not possible because FMU model with FMI1 can't reset state. "
+                                    "Please update model to FMI2 or FMI3. "
+                                    "Alternatively, choose an explicit coupling scheme.")
+                if not can_get_and_set_fmu_state:
+                    raise Exception("Implicit coupling not possible because FMU model can't reset state. "
+                                    "Please implement getFMUstate() and setFMUstate() in FMU "
+                                    "and set the according flag in ModelDescription.xml. "
+                                    "Alternatively, choose an explicit coupling scheme.")
+
+                # Save checkpoint
+                state_cp = fmu.getFMUState()
+                t_cp = t
+        
+        
+        # Is this necessary for v2 or can it go?
+        #dt = np.min([precice_dt, my_dt])
+        
         # Compute current time step size
-        dt = np.min([precice_dt, my_dt])
+        precice_dt = participant.get_max_time_step_size()
+        dt = precice_dt
 
         # Read data from other participant
-        read_data = precice_read_data(interface, read_data_type, read_data_id, vertex_id)
+        if is_precice2:
+            read_data = precice2_read_data(participant, read_data_type, read_data_id, vertex_id) 
+        elif is_precice3:
+            read_data = participant.read_data(mesh_name, read_data_name, vertex_id, precice_dt)
 
+        print(read_data)
         # Convert data to list for FMU
-        if read_data_type == "scalar":
-            read_data = [read_data]
-        elif read_data_type == "vector":
-            read_data = list(read_data)
+        if is_precice2:
+            if read_data_type == "scalar":
+                read_data = [read_data]
+            elif read_data_type == "vector":
+                read_data = list(read_data)
+        if is_precice3:
+            # no distinction anymore between scalar and vector?
+            read_data = read_data[0]
+            
+        print(read_data)
 
         # Set signals in FMU
         input.apply(t)
@@ -262,30 +348,52 @@ def main():
             result = fmu.getFloat64(vr_write)
 
         # Convert result to double or array for preCICE
-        if write_data_type == "scalar":
-            write_data = result[0]
-        elif write_data_type == "vector":
-            write_data = np.array(result)
+        if is_precice2:
+            if write_data_type == "scalar":
+                write_data = result[0]
+            elif write_data_type == "vector":
+                write_data = np.array(result)
+        elif is_precice3:
+            write_data = result
+            print(result)
+            print(write_data)
 
         # Write data to other participant
-        precice_write_data(interface, write_data_type, write_data_id, vertex_id, write_data)
+        if is_precice2:
+            precice2_write_data(participant, write_data_type, write_data_id, vertex_id, write_data) # v3: Use dummy for ID
+        elif is_precice3:
+            participant.write_data(mesh_name, write_data_name, vertex_id, write_data)
 
         t = t + dt
 
-        precice_dt = interface.advance(dt)
+        # Wrapper function instead of if / else?
+        if is_precice2:
+            precice_dt = participant.advance(dt)
 
-        if interface.is_action_required(precice.action_read_iteration_checkpoint()):
+            if participant.is_action_required(precice.action_read_iteration_checkpoint()): #v3: Wrapper function?
 
-            fmu.setFMUState(state_cp)
-            t = t_cp
+                fmu.setFMUState(state_cp)
+                t = t_cp
 
-            interface.mark_action_fulfilled(precice.action_read_iteration_checkpoint())
+                participant.mark_action_fulfilled(precice.action_read_iteration_checkpoint())
 
-        else:
-            # Save output data for completed timestep
-            recorder.sample(t, force=False)
+            else:
+                # Save output data for completed timestep
+                recorder.sample(t, force=False)
+                
+        elif is_precice3:
+            participant.advance(dt)
 
-    interface.finalize()
+            if participant.requires_reading_checkpoint():
+
+                fmu.setFMUState(state_cp)
+                t = t_cp
+
+            else:
+                # Save output data for completed timestep
+                recorder.sample(t, force=False)
+
+    participant.finalize()
 
     # store final results
     try:
