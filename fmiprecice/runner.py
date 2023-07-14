@@ -236,7 +236,7 @@ def main():
         read_data = np.zeros((num_vertices, dimensions))
         write_data = np.zeros((num_vertices, dimensions))
 
-        vertex_id = participant.set_mesh_vertices(mesh_name, vertices)        
+        vertex_id = participant.set_mesh_vertices(mesh_name, vertices)       
 
         # check entries for data types
         read_data_type = precice_data["coupling_params"]["read_data"]["type"]
@@ -307,21 +307,19 @@ def main():
                 state_cp = fmu.getFMUState()
                 t_cp = t
         
-        
         # Is this necessary for v2 or can it go?
         #dt = np.min([precice_dt, my_dt])
         
         # Compute current time step size
-        precice_dt = participant.get_max_time_step_size()
+        precice_dt = participant.get_max_time_step_size() # v3 only
         dt = precice_dt
 
         # Read data from other participant
         if is_precice2:
             read_data = precice2_read_data(participant, read_data_type, read_data_id, vertex_id) 
         elif is_precice3:
-            read_data = participant.read_data(mesh_name, read_data_name, vertex_id, precice_dt)
-
-        print(read_data)
+            read_data = participant.read_data(mesh_name, read_data_name, vertex_id, precice_dt)     
+        
         # Convert data to list for FMU
         if is_precice2:
             if read_data_type == "scalar":
@@ -330,10 +328,12 @@ def main():
                 read_data = list(read_data)
         if is_precice3:
             # no distinction anymore between scalar and vector?
-            read_data = read_data[0]
-            
-        print(read_data)
-
+            if read_data_type == "scalar":
+                read_data = read_data[0]
+            elif read_data_type == "vector":
+                read_data = list(read_data)
+                raise Exception("Please implement exchange of vector data.")
+        
         # Set signals in FMU
         input.apply(t)
 
@@ -347,20 +347,25 @@ def main():
             fmu.doStep(t, dt)
             result = fmu.getFloat64(vr_write)
 
-        # Convert result to double or array for preCICE
+        # Convert result for preCICe
         if is_precice2:
+            # Convert to double or array
             if write_data_type == "scalar":
                 write_data = result[0]
             elif write_data_type == "vector":
                 write_data = np.array(result)
         elif is_precice3:
-            write_data = result
-            print(result)
-            print(write_data)
+            # Convert to array
+            if write_data_type == "scalar":
+                # This is not the correct way to exchange scalar data, how to do it?
+                # Only works if the data is marked as vector in precice-config --> not what I want
+                write_data = np.array([[result[0], 0]])
+            elif write_data_type == "vector":
+                raise Exception("Please implement exchange of vector data.")
 
         # Write data to other participant
         if is_precice2:
-            precice2_write_data(participant, write_data_type, write_data_id, vertex_id, write_data) # v3: Use dummy for ID
+            precice2_write_data(participant, write_data_type, write_data_id, vertex_id, write_data)
         elif is_precice3:
             participant.write_data(mesh_name, write_data_name, vertex_id, write_data)
 
