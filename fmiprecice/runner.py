@@ -230,11 +230,18 @@ def main():
         read_data_name = precice_data["coupling_params"]["read_data"]["name"]
         write_data_name = precice_data["coupling_params"]["write_data"]["name"]
         
-        # Is this correct? Only use one of the two data vectors to determine dimension for both?
-        dimensions = participant.get_data_dimensions(mesh_name, read_data_name)
+        dimensions = participant.get_mesh_dimensions(mesh_name)
+
         vertices = np.zeros((num_vertices, dimensions))
         read_data = np.zeros((num_vertices, dimensions))
         write_data = np.zeros((num_vertices, dimensions))
+        
+        # you can use this to read from precice-config if you exchange scalar data (dim=1) or vector data (dim=2 or 3)
+        # With this information, you can remove the entry "data type" from the JSON config files
+        # Until now, the information had to be passed by the user but be equal to the config entry
+        # Dont forget to change data type in config during testing
+        print("Use participant.get_data_dimensions() and remove data_type from JSON files.")
+        print(participant.get_data_dimensions(mesh_name, read_data_name))
 
         vertex_id = participant.set_mesh_vertices(mesh_name, vertices)       
 
@@ -327,12 +334,12 @@ def main():
             elif read_data_type == "vector":
                 read_data = list(read_data)
         if is_precice3:
-            # no distinction anymore between scalar and vector?
             if read_data_type == "scalar":
-                read_data = read_data[0]
+                # preCICE 3 returns the scalar data as a list
+                pass
             elif read_data_type == "vector":
-                read_data = list(read_data)
-                raise Exception("Please implement exchange of vector data.")
+                # why does this work? A (1,2) vector is written on a single scalar FMU variable. This is not correct
+                read_data = read_data[0]
         
         # Set signals in FMU
         input.apply(t)
@@ -347,7 +354,7 @@ def main():
             fmu.doStep(t, dt)
             result = fmu.getFloat64(vr_write)
 
-        # Convert result for preCICe
+        # Convert result for preCICE
         if is_precice2:
             # Convert to double or array
             if write_data_type == "scalar":
@@ -357,11 +364,11 @@ def main():
         elif is_precice3:
             # Convert to array
             if write_data_type == "scalar":
-                # This is not the correct way to exchange scalar data, how to do it?
-                # Only works if the data is marked as vector in precice-config --> not what I want
-                write_data = np.array([[result[0], 0]])
+                write_data = np.array(result)
+                #write_data = result # this also works, result is a list and therefore array-like
             elif write_data_type == "vector":
-                raise Exception("Please implement exchange of vector data.")
+                # Is this correct?
+                write_data = np.array(result)
 
         # Write data to other participant
         if is_precice2:
