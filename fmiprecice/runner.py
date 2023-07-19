@@ -338,7 +338,9 @@ def main():
                 # preCICE 3 returns the scalar data as a list
                 pass
             elif read_data_type == "vector":
-                # why does this work? A (1,2) vector is written on a single scalar FMU variable. This is not correct
+                # why does this work with one-entry vectors? A (1,2) vector is written on a single scalar FMU variable. This is not correct
+                # The program should abort if data_type = vector and the number of entries in vr_read / vr_write do not match the number of elements in read_data / write_data
+                # preCICE aborts for write_data() with the wrong dimensions, that is ok for now
                 read_data = read_data[0]
         
         # Set signals in FMU
@@ -367,8 +369,7 @@ def main():
                 write_data = np.array(result)
                 #write_data = result # this also works, result is a list and therefore array-like
             elif write_data_type == "vector":
-                # Is this correct?
-                write_data = np.array(result)
+                write_data = np.array([result])
 
         # Write data to other participant
         if is_precice2:
