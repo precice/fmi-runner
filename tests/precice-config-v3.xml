@@ -9,8 +9,8 @@
       enabled="true" />
   </log>
 
-  <data:vector name="dataOne" />
-  <data:vector name="dataTwo" />
+  <data:scalar name="dataOne" />
+  <data:scalar name="dataTwo" />
 
   <mesh name="MeshOne">
     <use-data name="dataOne" />

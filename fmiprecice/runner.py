@@ -186,6 +186,7 @@ def main():
         dimensions = participant.get_dimensions()
 
         vertices = np.zeros((num_vertices, dimensions))
+
         read_data = np.zeros((num_vertices, dimensions))
         write_data = np.zeros((num_vertices, dimensions))
 
@@ -242,8 +243,10 @@ def main():
         # Dont forget to change data type in config during testing
         print("Use participant.get_data_dimensions() and remove data_type from JSON files.")
         print(participant.get_data_dimensions(mesh_name, read_data_name))
+        print("Is a similar function available for preCICE v2 as well?")
+        # Is it possible to have different data types for read and write? Eg read a scalar and write a vector. This should be possible from preCICE, but I have to implement it.
 
-        vertex_id = participant.set_mesh_vertices(mesh_name, vertices)       
+        vertex_id = participant.set_mesh_vertices(mesh_name, vertices)
 
         # check entries for data types
         read_data_type = precice_data["coupling_params"]["read_data"]["type"]
@@ -254,10 +257,13 @@ def main():
             raise Exception("Wrong data type for write data in the precice settings file. Please choose from: scalar, vector")
 
         # initial value for write data
-        if write_data_type == "scalar":
-            write_data = fmu_write_data_init[0]
-        elif write_data_type == "vector":
-            write_data = np.array(fmu_write_data_init)
+        #if write_data_type == "scalar":
+        #    write_data = np.array(fmu_write_data_init)
+        #elif write_data_type == "vector":
+        #    write_data = np.array(fmu_write_data_init)
+        
+        # not necessary to discern?
+        write_data = np.array(fmu_write_data_init)
 
         # write initial data
         if participant.requires_initial_data():
@@ -299,7 +305,7 @@ def main():
         elif is_precice3:
             if participant.requires_writing_checkpoint():
 
-                # Check if model has the appropiate functionalities
+                # Check if model has the appropriate functionalities
                 if is_fmi1:
                     raise Exception("Implicit coupling not possible because FMU model with FMI1 can't reset state. "
                                     "Please update model to FMI2 or FMI3. "
@@ -338,8 +344,10 @@ def main():
                 # preCICE 3 returns the scalar data as a list
                 pass
             elif read_data_type == "vector":
-                # why does this work with one-entry vectors? A (1,2) vector is written on a single scalar FMU variable. This is not correct
-                # The program should abort if data_type = vector and the number of entries in vr_read / vr_write do not match the number of elements in read_data / write_data
+                # why does this work with one-entry vectors? A (1,2) vector is written on a single scalar FMU variable. 
+                # This is not correct
+                # The program should abort if data_type = vector and the number of entries 
+                # in vr_read / vr_write do not match the number of elements in read_data / write_data
                 # preCICE aborts for write_data() with the wrong dimensions, that is ok for now
                 read_data = read_data[0]
         
