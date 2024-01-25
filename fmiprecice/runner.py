@@ -166,13 +166,10 @@ def main():
     solver_process_size = 1
     num_vertices = 1
     
-    # Determine version of preCICE (currently still returns v2 for pyprecice-develop-3.0.0)
-    #is_precice2 = (precice.get_version_information().decode()[0] == "2")
-    #is_precice3 = (precice.get_version_information().decode()[0] == "3")
-    is_precice2 = False
-    is_precice3 = True
+    # Determine version of preCICE
+    is_precice2 = (precice.get_version_information().decode()[0] == "2")
+    is_precice3 = (precice.get_version_information().decode()[0] == "3")
 
-    
     if is_precice2:
         # Create the participant
         participant = precice.Interface(
