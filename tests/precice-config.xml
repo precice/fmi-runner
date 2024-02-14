@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<precice-configuration dimensions="2">
+<precice-configuration>
   <log>
     <sink
       type="stream"
@@ -12,12 +12,12 @@
   <data:scalar name="dataOne" />
   <data:scalar name="dataTwo" />
 
-  <mesh name="MeshOne">
+  <mesh name="MeshOne" dimensions="2">
     <use-data name="dataOne" />
     <use-data name="dataTwo" />
   </mesh>
 
-  <mesh name="MeshTwo">
+  <mesh name="MeshTwo" dimensions="2">
     <use-data name="dataOne" />
     <use-data name="dataTwo" />
   </mesh>
