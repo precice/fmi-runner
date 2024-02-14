@@ -148,8 +148,8 @@ def main():
     )
 
     mesh_name = precice_data["coupling_params"]["mesh_name"]
-    read_data_name = precice_data["coupling_params"]["read_data"]["name"]
-    write_data_name = precice_data["coupling_params"]["write_data"]["name"]
+    read_data_name = precice_data["coupling_params"]["read_data_name"]
+    write_data_name = precice_data["coupling_params"]["write_data_name"]
     
     dimensions = participant.get_mesh_dimensions(mesh_name)
 
@@ -157,36 +157,13 @@ def main():
     read_data = np.zeros((num_vertices, dimensions))
     write_data = np.zeros((num_vertices, dimensions))
     
-    # you can use this to read from precice-config if you exchange scalar data (dim=1) or vector data (dim=2 or 3)
-    # With this information, you can remove the entry "data type" from the JSON config files
-    # Until now, the information had to be passed by the user but be equal to the config entry
-    # Dont forget to change data type in config during testing
-    print("Use participant.get_data_dimensions() and remove data_type from JSON files.")
-    print(participant.get_data_dimensions(mesh_name, read_data_name))
-    print("Is a similar function available for preCICE v2 as well?")
     # Is it possible to have different data types for read and write? Eg read a scalar and write a vector. This should be possible from preCICE, but I have to implement it.
 
     vertex_id = participant.set_mesh_vertices(mesh_name, vertices)
 
-    # check entries for data types
-    read_data_type = precice_data["coupling_params"]["read_data"]["type"]
-    write_data_type = precice_data["coupling_params"]["write_data"]["type"]
-    if read_data_type not in ["scalar", "vector"]:
-        raise Exception("Wrong data type for read data in the precice settings file. Please choose from: scalar, vector")
-    if write_data_type not in ["scalar", "vector"]:
-        raise Exception("Wrong data type for write data in the precice settings file. Please choose from: scalar, vector")
-
-    # initial value for write data
-    #if write_data_type == "scalar":
-    #    write_data = np.array(fmu_write_data_init)
-    #elif write_data_type == "vector":
-    #    write_data = np.array(fmu_write_data_init)
-    
-    # not necessary to discern?
-    write_data = np.array(fmu_write_data_init)
-
     # write initial data
     if participant.requires_initial_data():
+        write_data = np.array(fmu_write_data_init)
         participant.write_data(mesh_name, write_data_name, vertex_id, write_data)
     
     participant.initialize()
@@ -225,7 +202,7 @@ def main():
         read_data = participant.read_data(mesh_name, read_data_name, vertex_id, precice_dt)     
         
         # Convert data to list for FMU
-        if read_data_type == "vector":
+        if participant.get_data_dimensions(mesh_name, read_data_name) > 1:
             # why does this work with one-entry vectors? A (1,2) vector is written on a single scalar FMU variable. 
             # This is not correct
             # The program should abort if data_type = vector and the number of entries 
@@ -248,9 +225,9 @@ def main():
 
         # Convert result for preCICE
         # Convert to array
-        if write_data_type == "scalar":
+        if participant.get_data_dimensions(mesh_name, write_data_name) == 1:
             write_data = np.array(result)
-        elif write_data_type == "vector":
+        else:
             write_data = np.array([result])
 
         participant.write_data(mesh_name, write_data_name, vertex_id, write_data)

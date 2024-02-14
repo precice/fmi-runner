@@ -3,7 +3,7 @@
         "participant_name": "SolverOne",
         "config_file_name": "../precice-config.xml",
         "mesh_name": "MeshOne",
-        "write_data": {"name": "dataOne", "type": "scalar"},
-        "read_data": {"name": "dataTwo", "type": "scalar"}
+        "write_data_name": "dataOne",
+        "read_data_name": "dataTwo"
     }
 }
