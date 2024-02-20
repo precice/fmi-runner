@@ -9,7 +9,7 @@ summary: A tool to execute FMUs and couple them to PDE-based solvers using preCI
 
 The [Functional Mock-Up Interface](https://fmi-standard.org/) (FMI) is a standard for the exchange of dynamic simulation models. Currently, it is the de-facto industry standard for co-simulation. Models implementing the FMI standard are called Functional Mock-Up Units (FMU).
 
-The preCICE-FMI runner contains the script `fmiprecice` to couple FMU models with other simulation tools via [preCICE](https://precice.org/). The runner serves as an importer for the FMU to steer the simulation. Additionally, the runner calls the preCICE library to communicate and coordinate with other solvers. 
+The preCICE-FMI runner contains the script `fmiprecice` to couple FMU models with other simulation tools via [preCICE](https://precice.org/). The runner serves as an importer for the FMU to steer the simulation. Additionally, the runner calls the preCICE library to communicate and coordinate with other solvers.
 
 ![img](images/tooling-fmi-runner-setup.png)
 
@@ -21,7 +21,7 @@ The runner is called from the terminal with the command `fmiprecice`. It takes t
 fmiprecice ./fmi-settings.json ./precice-settings.json
 ```
 
-Read on to find out how to install and configure the runner. More information about the software, its abilities, and its limitations can be found in [1]. If you are ready to run your first case, have a look at the [oscillator tutorial](https://github.com/LeonardWilleke/precice-tutorials/tree/create-fmu-oscillator-v2/oscillator). 
+Read on to find out how to install and configure the runner. More information about the software, its abilities, and its limitations can be found in [1]. If you are ready to run your first case, have a look at the [oscillator tutorial](https://github.com/LeonardWilleke/precice-tutorials/tree/create-fmu-oscillator-v2/oscillator).
 
 ## Get the Runner
 
@@ -43,7 +43,7 @@ pip3 install numpy
 pip3 install fmpy
 ```
 
-### Installation 
+### Installation
 
 The software is [hosted on GitHub](https://github.com/precice/fmi-runner). Clone the repository and switch to the root directory:
 
@@ -93,8 +93,8 @@ The file `fmi-settings.json` holds all the necessary information to run a simula
         "output": ["force", "position"]
     },
     "model_params": {
-        "apply_filter":	true,
-        "spring_coeff":	65.0
+        "apply_filter": true,
+        "spring_coeff": 65.0
     },
     "initial_conditions": {
         "position":     0.0
@@ -157,9 +157,9 @@ The file `precice-settings.json` is used to configure the coupling with preCICE.
 
 Current limitations of the FMI runner software are:
 
-- Can only be used with preCICE v2 and Co-Simulation FMUs (FMI 1,2,3)
-- All accessed FMU variables are scalar
-- Data can only be exchanged via one vertex. The exchange of multiple vertices or full meshes is not possible.
+* Can only be used with preCICE v2 and Co-Simulation FMUs (FMI 1,2,3)
+* All accessed FMU variables are scalar
+* Data can only be exchanged via one vertex. The exchange of multiple vertices or full meshes is not possible.
 
 ## How to cite
 
@@ -180,4 +180,3 @@ If you are using the FMI runner, pĺease consider citing the following Thesis:
 ## References
 
 [1] L. Willeke, [A preCICE-FMI Runner to couple controller models to PDEs](https://doi.org/10.18419/opus-13130), Master Thesis, University of Stuttgart, 2023
-
