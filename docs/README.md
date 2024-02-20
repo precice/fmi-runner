@@ -11,7 +11,7 @@ The [Functional Mock-Up Interface](https://fmi-standard.org/) (FMI) is a standar
 
 The preCICE-FMI runner contains the script `fmiprecice` to couple FMU models with other simulation tools via [preCICE](https://precice.org/). The runner serves as an importer for the FMU to steer the simulation. Additionally, the runner calls the preCICE library to communicate and coordinate with other solvers.
 
-![img](images/tooling-fmi-runner-setup.png)
+![img](images/docs-tooling-fmi-runner-setup.png)
 
 ## Usage
 
