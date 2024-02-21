@@ -12,7 +12,7 @@ jobs:
   formatting:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout preCICE
+      - name: Checkout the FMI Runner
         uses: actions/checkout@v4
       - name: Setup python
         uses: actions/setup-python@v5
