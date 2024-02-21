@@ -45,7 +45,7 @@
     <read-data name="dataOne" mesh="MeshTwo" />
   </participant>
 
-  <m2n:sockets acceptor="SolverOne" connector="SolverTwo" exchange-directory=".."/>
+  <m2n:sockets acceptor="SolverOne" connector="SolverTwo" exchange-directory=".." />
 
   <coupling-scheme:serial-explicit>
     <participants first="SolverOne" second="SolverTwo" />
