@@ -1,14 +1,14 @@
 repos:
 # Official repo for default hooks
 - repo: https://github.com/precice/precice-pre-commit-hooks
-  rev: 'v3.2'
+  rev: 'v3.3'
   hooks:
   - id: format-precice-config
     files: "^.*/precice-config.xml"
   - id: check-image-prefix
     args: [ --prefix=docs-tooling-fmi-runner- ]
 - repo: https://github.com/igorshubovych/markdownlint-cli
-  rev: v0.39.0
+  rev: v0.30.0
   hooks:
     - id: markdownlint
       files: "^docs/.*.md"
