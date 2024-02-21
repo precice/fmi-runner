@@ -12,6 +12,7 @@ import shutil
 import sys
 import json
 
+
 def main():
     """
     Executes the Runner
@@ -135,7 +136,7 @@ def main():
     solver_process_index = 0
     solver_process_size = 1
     num_vertices = 1
-    
+
     if precice.get_version_information().decode()[0] != "3":
         raise Exception("This version of the FMI Runner is only compatible with preCICE v3.")
 
@@ -150,13 +151,13 @@ def main():
     mesh_name = precice_data["coupling_params"]["mesh_name"]
     read_data_name = precice_data["coupling_params"]["read_data_name"]
     write_data_name = precice_data["coupling_params"]["write_data_name"]
-    
+
     dimensions = participant.get_mesh_dimensions(mesh_name)
 
     vertices = np.zeros((num_vertices, dimensions))
     read_data = np.zeros((num_vertices, dimensions))
     write_data = np.zeros((num_vertices, dimensions))
-    
+
     # Is it possible to have different data types for read and write? Eg read a scalar and write a vector. This should be possible from preCICE, but I have to implement it.
 
     vertex_id = participant.set_mesh_vertices(mesh_name, vertices)
@@ -165,19 +166,17 @@ def main():
     if participant.requires_initial_data():
         write_data = np.array(fmu_write_data_init)
         participant.write_data(mesh_name, write_data_name, vertex_id, write_data)
-    
-    participant.initialize()
 
+    participant.initialize()
 
     recorder = Recorder(fmu=fmu, modelDescription=model_description, variableNames=output_names)
 
     t = 0
 
     recorder.sample(t, force=False)
-    
 
     while participant.is_coupling_ongoing():
-        
+
         if participant.requires_writing_checkpoint():
 
             # Check if model has the appropriate functionalities
@@ -194,22 +193,22 @@ def main():
             # Save checkpoint
             state_cp = fmu.getFMUState()
             t_cp = t
-        
+
         # Compute current time step size
         precice_dt = participant.get_max_time_step_size()
-        dt = precice_dt # FMU always does the max possible dt
+        dt = precice_dt  # FMU always does the max possible dt
 
-        read_data = participant.read_data(mesh_name, read_data_name, vertex_id, precice_dt)     
-        
+        read_data = participant.read_data(mesh_name, read_data_name, vertex_id, precice_dt)
+
         # Convert data to list for FMU
         if participant.get_data_dimensions(mesh_name, read_data_name) > 1:
-            # why does this work with one-entry vectors? A (1,2) vector is written on a single scalar FMU variable. 
+            # why does this work with one-entry vectors? A (1,2) vector is written on a single scalar FMU variable.
             # This is not correct
-            # The program should abort if data_type = vector and the number of entries 
+            # The program should abort if data_type = vector and the number of entries
             # in vr_read / vr_write do not match the number of elements in read_data / write_data
             # preCICE aborts for write_data() with the wrong dimensions, that is ok for now
             read_data = read_data[0]
-        
+
         # Set signals in FMU
         input.apply(t)
 
