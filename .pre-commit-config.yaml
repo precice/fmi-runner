@@ -1,0 +1,21 @@
+repos:
+# Official repo for default hooks
+- repo: https://github.com/precice/precice-pre-commit-hooks
+  rev: 'v3.2'
+  hooks:
+  - id: format-precice-config
+    files: "^.*/precice-config.xml"
+  - id: check-image-prefix
+    args: [ --prefix=docs-tooling-fmi-runner- ]
+- repo: https://github.com/igorshubovych/markdownlint-cli
+  rev: v0.39.0
+  hooks:
+    - id: markdownlint
+      files: "^docs/.*.md"
+    - id: markdownlint-fix
+      files: "^docs/.*.md"
+-  repo: https://github.com/hhatto/autopep8
+   rev: v2.0.4
+   hooks:
+     - id: autopep8
+       args: [ --in-place, --ignore=E402, --max-line-length=120 ]
