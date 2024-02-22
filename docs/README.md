@@ -1,7 +1,7 @@
 ---
 title: FMI runner
 permalink: tooling-fmi-runner.html
-keywords: tooling, fmi, runner, fmi-settings, precice-settings
+keywords: tooling, fmi, runner, fmi-settings, precice-settings, controller
 summary: A tool to execute FMUs and couple them to PDE-based solvers using preCICE.
 ---
 
@@ -9,38 +9,37 @@ summary: A tool to execute FMUs and couple them to PDE-based solvers using preCI
 
 The [Functional Mock-Up Interface](https://fmi-standard.org/) (FMI) is a standard for the exchange of dynamic simulation models. Currently, it is the de-facto industry standard for co-simulation. Models implementing the FMI standard are called Functional Mock-Up Units (FMU).
 
-The preCICE-FMI runner contains the script `fmiprecice` to couple FMU models with other simulation tools via [preCICE](https://precice.org/). The runner serves as an importer for the FMU to steer the simulation. Additionally, the runner calls the preCICE library to communicate and coordinate with other solvers.
+The preCICE-FMI runner contains the script `fmiprecice` to couple FMU models with other simulation tools via [preCICE](https://precice.org/). The runner serves as an importer for the FMU to steer the simulation. Additionally, the runner calls the preCICE library to communicate and coordinate with other simulation tools.
 
-![img](images/docs-tooling-fmi-runner-setup.png)
+![Software concept of the FMI runner](images/docs-tooling-fmi-runner-setup.png)
 
 ## Usage
 
-The runner is called from the terminal with the command `fmiprecice`. It takes two input files, one with settings for the FMU simulation and one with settings for preCICE. Start the runner by pointing to the input files:
+The runner is called from the terminal with the command `fmiprecice`. It takes two input files: one with settings for the FMU simulation and one with settings for preCICE. Start the runner by pointing to the input files:
 
 ```bash
 fmiprecice ./fmi-settings.json ./precice-settings.json
 ```
 
-Read on to find out how to install and configure the runner. More information about the software, its abilities, and its limitations can be found in [1]. If you are ready to run your first case, have a look at the [oscillator tutorial](https://github.com/LeonardWilleke/precice-tutorials/tree/create-fmu-oscillator-v2/oscillator).
+Read on to find out how to install and configure the runner. More information about the software, its abilities, and its limitations can be found in [1] and [2]. If you are ready to run your first case, have a look at the [oscillator tutorial](https://precice.org/tutorials-oscillator.html).
 
 ## Get the Runner
 
 ### Dependencies
 
-Before you start the installation, make sure you have installed the following packages:
+Before you start the installation of the runner, make sure you have installed the following packages:
 
-* Python 3 or higher
+* Python 3
 * [preCICE](https://precice.org/installation-overview.html)
+  * v0.1 of the runner requires preCICE v2, v0.2 requires preCICE v3
 * [pyprecice: Python language bindings for preCICE](https://github.com/precice/python-bindings)
 * [NumPy](https://numpy.org/install/)
 * [FMPy](https://fmpy.readthedocs.io/en/latest/install/) (tested for v0.3.13)
 
-To install the three python packages with the Python package manager **pip** run:
+To install the three python packages with the Python package manager `pip` run:
 
 ```bash
-pip3 install pyprecice
-pip3 install numpy
-pip3 install fmpy
+pip3 install pyprecice numpy fmpy
 ```
 
 ### Installation
@@ -52,7 +51,7 @@ git clone https://github.com/precice/fmi-runner.git
 cd fmi-runner
 ```
 
-To use **pip** for the installation, run the command:
+To use `pip` for the installation, run the command:
 
 ```bash
 pip3 install --user -e .
@@ -60,7 +59,7 @@ pip3 install --user -e .
 
 The editable flag `-e` allows you to update the FMI runner by pulling the repository.
 
-To use **Python** for the installation, run the command:
+To use Python for the installation, run the command:
 
 ```bash
 python setup.py install --user
@@ -72,7 +71,7 @@ Maybe you need to add your user installation to your path to make the new softwa
 export PATH=$PATH:$HOME/.local/bin
 ```
 
-You're good to go! Read on to learn how to configure the FMI runner or [run your first simulation](https://github.com/LeonardWilleke/precice-tutorials/tree/create-fmu-oscillator-v2/oscillator).
+You are good to go! Read on to learn how to configure the FMI runner or run your first simulation: the [oscillator tutorial](https://precice.org/tutorials-oscillator.html).
 
 ## Configuration
 
@@ -112,7 +111,7 @@ The file `fmi-settings.json` holds all the necessary information to run a simula
 
 The config file allows you to access and manipulate the variables within the FMU model. Therefore, the variable names have to match with the variables listed in the `ModelDescription.xml` of the FMU.
 
-Let's have a closer look at the specific dictionaries:
+Let us have a closer look at the specific dictionaries:
 
 **simulation_params**: The list `fmu_read_data_names` is used to specify the read data of the FMU, while the list `fmu_write_data_names` concerns the write data. If you exchange scalar data, use a list with one entry. If you exchange vector data via preCICE, the number of list entries has to match the dimensions defined in the `precice-config.xml`. For example, to read a two-dimensional force on two scalar FMU variables use
 
@@ -124,8 +123,8 @@ Let's have a closer look at the specific dictionaries:
     }
 ```
 
-{% note %}
-Version v0.1 of the runner cannot deal with FMU vectors. All FMU variables need to be scalars. Besides that, however, any data type implemented in the FMU (integer, float, boolean, string) is supported.
+note v0.1 and v0.2 of the runner cannot deal with FMU vectors. All FMU variables need to be scalars. Besides that, however, any data type implemented in the FMU (integer, float, boolean, string) is supported.
+{% Versions %}
 {% endnote %}
 
 Optionally, you can choose variables in `output` that are tracked and stored as a timeseries in `output_file_name`.
@@ -145,19 +144,19 @@ The file `precice-settings.json` is used to configure the coupling with preCICE.
         "participant_name": "Suspension",
         "config_file_name": "../precice-config.xml",
         "mesh_name": "Suspension-Mesh",
-        "read_data": {"name": "Force", "type": "scalar"}, 
-        "write_data": {"name": "Position", "type": "scalar"}
+        "read_data_name": "Force", 
+        "write_data_name": "Position"
     }
 }
 ```
 
-`participant_name` and `mesh_name` need to match the entries in `precice-config.xml`. The same is true for `write_data` and `read_data`, which control the data exchange. `type` can be set to `scalar` or `vector`.
+`participant_name` and `mesh_name` need to match the entries in `precice-config.xml`. The same is true for `write_data_name` and `read_data_name`, which control the data exchange.
 
 ## Limitations
 
 Current limitations of the FMI runner software are:
 
-* Can only be used with preCICE v2 and Co-Simulation FMUs (FMI 1,2,3)
+* Can only be used with Co-Simulation FMUs (FMI 1,2,3)
 * All accessed FMU variables are scalar
 * Data can only be exchanged via one vertex. The exchange of multiple vertices or full meshes is not possible.
 
@@ -166,17 +165,18 @@ Current limitations of the FMI runner software are:
 If you are using the FMI runner, pĺease consider citing the following Thesis:
 
 ```bibtex
-@misc{
+@incollection{
     Willeke:2023,
-    author   = {Willeke, Leonard},
-    title    = {A preCICE-FMI Runner to Couple Controller Models to PDEs},
-    school   = {University of Stuttgart},
-    type     = {Master thesis},
-    doi      = {10.18419/opus-13130},
-    year     = {2023}
+    author    = {Willeke, Leonard and Schneider, David and Uekermann, Benjamin},
+    title     = {A preCICE-FMI Runner to Couple FMUs to PDE-Based Simulations},
+    booktitle = {Proceedings 15th Intern. Modelica Conference},
+    editor    = {Müller, Dirk and Monti, Antonello and Benigni, Andrea},
+    publisher = {Linköping Electronic Conference Proceedings},
+    year      = {2023}
 }
 ```
 
 ## References
 
-[1] L. Willeke, [A preCICE-FMI Runner to couple controller models to PDEs](https://doi.org/10.18419/opus-13130), Master Thesis, University of Stuttgart, 2023
+[1] L. Willeke, D. Schneider, B. Uekermann, [A preCICE-FMI Runner to Couple FMUs to PDE-Based Simulations](https://doi.org/10.3384/ecp204), Proceedings 15th Intern. Modelica Conference, 2023
+[2] L. Willeke, [A preCICE-FMI Runner to couple controller models to PDEs](https://doi.org/10.18419/opus-13130), Master Thesis, University of Stuttgart, 2023
