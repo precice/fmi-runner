@@ -179,4 +179,5 @@ If you are using the FMI runner, pĺease consider citing the following Thesis:
 ## References
 
 [1] L. Willeke, D. Schneider, B. Uekermann, [A preCICE-FMI Runner to Couple FMUs to PDE-Based Simulations](https://doi.org/10.3384/ecp204), Proceedings 15th Intern. Modelica Conference, 2023
+
 [2] L. Willeke, [A preCICE-FMI Runner to couple controller models to PDEs](https://doi.org/10.18419/opus-13130), Master Thesis, University of Stuttgart, 2023
