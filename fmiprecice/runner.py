@@ -152,19 +152,20 @@ def main():
     read_data_name = precice_data["coupling_params"]["read_data_name"]
     write_data_name = precice_data["coupling_params"]["write_data_name"]
 
-    dimensions = participant.get_mesh_dimensions(mesh_name)
+    mesh_dimensions = participant.get_mesh_dimensions(mesh_name)
+    vertices = np.zeros((num_vertices, mesh_dimensions))
 
-    vertices = np.zeros((num_vertices, dimensions))
-    read_data = np.zeros((num_vertices, dimensions))
-    write_data = np.zeros((num_vertices, dimensions))
+    read_data_dimensions = participant.get_data_dimensions(mesh_name, read_data_name)
+    read_data = np.zeros((num_vertices, read_data_dimensions))
 
-    # Is it possible to have different data types for read and write? Eg read a scalar and write a vector. This should be possible from preCICE, but I have to implement it.
+    write_data_dimensions = participant.get_data_dimensions(mesh_name, write_data_name)
+    write_data = np.zeros((num_vertices, write_data_dimensions))
 
     vertex_id = participant.set_mesh_vertices(mesh_name, vertices)
 
     # write initial data
     if participant.requires_initial_data():
-        write_data = np.array(fmu_write_data_init)
+        write_data[0] = np.array(fmu_write_data_init)  # only one vertex
         participant.write_data(mesh_name, write_data_name, vertex_id, write_data)
 
     participant.initialize()
@@ -202,9 +203,7 @@ def main():
 
         # Convert data to list for FMU
         if participant.get_data_dimensions(mesh_name, read_data_name) > 1:
-            # why does this work with one-entry vectors? A (1,2) vector is written on a single scalar FMU variable.
-            # This is not correct
-            # The program should abort if data_type = vector and the number of entries
+            # TODO: The program should abort if data_type = vector and the number of entries
             # in vr_read / vr_write do not match the number of elements in read_data / write_data
             # preCICE aborts for write_data() with the wrong dimensions, that is ok for now
             read_data = read_data[0]
