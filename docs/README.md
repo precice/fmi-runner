@@ -123,8 +123,8 @@ Let us have a closer look at the specific dictionaries:
     }
 ```
 
+{% note %}
 note v0.1 and v0.2 of the runner cannot deal with FMU vectors. All FMU variables need to be scalars. Besides that, however, any data type implemented in the FMU (integer, float, boolean, string) is supported.
-{% Versions %}
 {% endnote %}
 
 Optionally, you can choose variables in `output` that are tracked and stored as a timeseries in `output_file_name`.
