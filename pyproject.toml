@@ -34,10 +34,9 @@ Repository = "https://github.com/precice/fmi-runner"
 "Bug Tracker" = "https://github.com/precice/fmi-runner/issues"
 
 [project.scripts]
-fmiprecice = "fmiprecice.cli:main"
+fmiprecice = "fmiprecice.runner:main"
 
 [tool.setuptools]
-data-files = { "share/applications" = ["data/org.precice.configvisualizer.desktop"] }
 packages=["fmiprecice"]
 
 [tool.setuptools-git-versioning]
