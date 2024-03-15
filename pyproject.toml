@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=41", "wheel", "setuptools-git-versioning"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name="fmiprecice"
+dynamic = [ "version" ]
+dependencies = [
+    "fmpy", "numpy", "pyprecice>=3.0"
+]
+requires-python = ">=3.8"
+authors = [
+    { name = "The preCICE Developers",  email="info@precice.org"}
+]
+maintainers = [
+    { name = "Benjamin Uekermann",  email="benjamin.uekermann@ipvs.uni-stuttgart.de"}
+]
+description="A tool to co-simulate FMU models with the coupling library preCICE."
+readme = "README.md"
+license={ text = "LGPL-3.0" }
+keywords = [ "preCICE", "FMI", "ODE", "controller", "PDE", "coupling" ]
+classifiers=[
+"Development Status :: 4 - Beta",
+"License :: OSI Approved :: GNU LESSER General Public License v3 (LGPLv3)",
+"Programming Language :: Python :: 3 :: Only",
+"Programming Language :: Python :: 3.8",
+"Topic :: Scientific/Engineering :: TODO",
+]
+
+[project.urls]
+Homepage = "https://precice.org"
+Documentation = "https://precice.org/tooling-fmi-runner.html"
+Repository = "https://github.com/precice/fmi-runner"
+"Bug Tracker" = "https://github.com/precice/fmi-runner/issues"
+
+[project.scripts]
+fmiprecice = "fmiprecice.runner:main"
+
+[tool.setuptools]
+packages=["fmiprecice"]
+
+[tool.setuptools-git-versioning]
+enabled = true
