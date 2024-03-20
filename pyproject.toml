@@ -21,7 +21,7 @@ license={ text = "LGPL-3.0" }
 keywords = [ "preCICE", "FMI", "ODE", "controller", "PDE", "coupling" ]
 classifiers=[
 "Development Status :: 4 - Beta",
-"License :: OSI Approved :: GNU LESSER General Public License v3 (LGPLv3)",
+"License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
 "Programming Language :: Python :: 3 :: Only",
 "Programming Language :: Python :: 3.8",
 "Topic :: Scientific/Engineering",
