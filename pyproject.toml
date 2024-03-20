@@ -24,7 +24,7 @@ classifiers=[
 "License :: OSI Approved :: GNU LESSER General Public License v3 (LGPLv3)",
 "Programming Language :: Python :: 3 :: Only",
 "Programming Language :: Python :: 3.8",
-"Topic :: Scientific/Engineering :: TODO",
+"Topic :: Scientific/Engineering",
 ]
 
 [project.urls]
