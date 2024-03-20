@@ -7,7 +7,7 @@ summary: A tool to execute FMUs and couple them to PDE-based solvers using preCI
 
 ## What is this?
 
-The [Functional Mock-Up Interface](https://fmi-standard.org/) (FMI) is a standard for the exchange of dynamic simulation models. Currently, it is the de-facto industry standard for co-simulation. Models implementing the FMI standard are called Functional Mock-Up Units (FMU).
+The [Functional Mock-Up Interface](https://fmi-standard.org/) (FMI) is a standard for the exchange of dynamic simulation models. Currently, it is the de-facto industry standard for co-simulation. A model implementing the FMI standard is called Functional Mock-Up Unit (FMU).
 
 The preCICE-FMI runner contains the script `fmiprecice` to couple FMU models with other simulation tools via [preCICE](https://precice.org/). The runner serves as an importer for the FMU to steer the simulation. Additionally, the runner calls the preCICE library to communicate and coordinate with other simulation tools.
 
@@ -25,24 +25,38 @@ Read on to find out how to install and configure the runner. More information ab
 
 ## Get the Runner
 
-### Dependencies
+### Releases
 
-Before you start the installation of the runner, make sure you have installed the following packages:
+First, install the necessary dependencies:
 
-* Python 3
-* [preCICE](https://precice.org/installation-overview.html)
-  * v0.1 of the runner requires preCICE v2, v0.2 requires preCICE v3
-* [pyprecice: Python language bindings for preCICE](https://github.com/precice/python-bindings)
-* [NumPy](https://numpy.org/install/)
-* [FMPy](https://fmpy.readthedocs.io/en/latest/install/) (tested for v0.3.13)
+- Python3 including pip
+- [preCICE v3](https://precice.org/installation-overview.html)
 
-To install the three python packages with the Python package manager `pip` run:
+Then, get released versions from PyPI:
 
 ```bash
-pip3 install pyprecice numpy fmpy
+pip install fmiprecice
 ```
 
-### Installation
+You are good to go! Read below how to configure the FMI runner or directly run your first simulation: the [oscillator tutorial](https://precice.org/tutorials-oscillator.html).
+
+### Develop version
+
+If you need the latest develop version, you can install from the repository.
+
+First, install the necessary dependencies:
+
+- [preCICE](https://precice.org/installation-overview.html)
+  - v0.1 of the runner requires preCICE v2, v0.2 requires preCICE v3
+- [pyprecice: Python language bindings for preCICE](https://github.com/precice/python-bindings)
+- [NumPy](https://numpy.org/install/)
+- [FMPy](https://fmpy.readthedocs.io/en/latest/install/) (tested for v0.3.13 to v0.3.20)
+
+To install the three python packages from PyPI:
+
+```bash
+pip install pyprecice numpy fmpy
+```
 
 The software is [hosted on GitHub](https://github.com/precice/fmi-runner). Clone the repository and switch to the root directory:
 
@@ -54,24 +68,16 @@ cd fmi-runner
 To use `pip` for the installation, run the command:
 
 ```bash
-pip3 install --user -e .
+pip install --user -e .
 ```
 
 The editable flag `-e` allows you to update the FMI runner by pulling the repository.
-
-To use Python for the installation, run the command:
-
-```bash
-python setup.py install --user
-```
 
 Maybe you need to add your user installation to your path to make the new software findable. To do so, run the command:
 
 ```bash
 export PATH=$PATH:$HOME/.local/bin
 ```
-
-You are good to go! Read on to learn how to configure the FMI runner or run your first simulation: the [oscillator tutorial](https://precice.org/tutorials-oscillator.html).
 
 ## Configuration
 
@@ -156,9 +162,9 @@ The file `precice-settings.json` is used to configure the coupling with preCICE.
 
 Current limitations of the FMI runner software are:
 
-* Can only be used with Co-Simulation FMUs (FMI 1,2,3)
-* All accessed FMU variables are scalar
-* Data can only be exchanged via one vertex. The exchange of multiple vertices or full meshes is not possible.
+- Can only be used with Co-Simulation FMUs (FMI 1,2,3)
+- All accessed FMU variables are scalar
+- Data can only be exchanged via one vertex. The exchange of multiple vertices or full meshes is not possible.
 
 ## How to cite
 
@@ -178,6 +184,6 @@ If you are using the FMI runner, pĺease consider citing the following Thesis:
 
 ## References
 
-[1] L. Willeke, D. Schneider, B. Uekermann, [A preCICE-FMI Runner to Couple FMUs to PDE-Based Simulations](https://doi.org/10.3384/ecp204), Proceedings 15th Intern. Modelica Conference, 2023
+[1] L. Willeke, D. Schneider, B. Uekermann, [A preCICE-FMI Runner to Couple FMUs to PDE-Based Simulations](https://doi.org/10.3384/ecp204479), Proceedings 15th Intern. Modelica Conference, 2023
 
 [2] L. Willeke, [A preCICE-FMI Runner to couple controller models to PDEs](https://doi.org/10.18419/opus-13130), Master Thesis, University of Stuttgart, 2023
