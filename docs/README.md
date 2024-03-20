@@ -73,12 +73,6 @@ pip install --user -e .
 
 The editable flag `-e` allows you to update the FMI runner by pulling the repository.
 
-To use Python for the installation, run the command:
-
-```bash
-python setup.py install --user
-```
-
 Maybe you need to add your user installation to your path to make the new software findable. To do so, run the command:
 
 ```bash
