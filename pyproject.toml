@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name="fmiprecice"
 dynamic = [ "version" ]
 dependencies = [
-    "fmpy", "numpy", "pyprecice>=3.0"
+    "fmpy >=0.3.13, <=0.3.20", "numpy >1, <2", "pyprecice>=3.0"
 ]
 requires-python = ">=3.8"
 authors = [
