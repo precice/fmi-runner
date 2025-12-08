@@ -29,18 +29,14 @@ jobs:
         # see https://stackoverflow.com/a/74669486
         run: |
           . .venv/bin/activate
-          echo PATH=$PATH >> $GITHUB_ENV
-          
-          python -m pip install --upgrade pip
-          pip install fmpy  
+          echo PATH=$PATH >> $GITHUB_ENV   
       - name: Run pip install
-        run:  pip3 install .
+        run:  pip install .
       - name: Run coupling of two Dummy FMUs
         timeout-minutes: 3
         run: |
           cd tests/
-          cd SolverOne/ && python3 fmiprecice ./fmi-settings.json ./precice-settings.json & cd SolverTwo/ && python3 fmiprecice ./fmi-settings.json ./precice-settings.json
-
+          cd SolverOne/ && fmiprecice ./fmi-settings.json ./precice-settings.json & cd SolverTwo/ && fmiprecice ./fmi-settings.json ./precice-settings.json
       - name: Check the result
         timeout-minutes: 3
         run: |
