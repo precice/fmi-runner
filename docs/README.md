@@ -65,10 +65,11 @@ git clone https://github.com/precice/fmi-runner.git
 cd fmi-runner
 ```
 
-To use `pip` for the installation, run the command:
+To use `pip` for the installation, create a [virtual environment](https://docs.python.org/3/library/venv.html#creating-virtual-environments) and install the package:
 
 ```bash
-pip install --user -e .
+python -m venv .venv && . .venv/bin/activate
+pip install -e .
 ```
 
 The editable flag `-e` allows you to update the FMI runner by pulling the repository.
