@@ -1,0 +1,13 @@
+name: System tests
+
+on:
+  pull_request:
+    types: [labeled]
+
+jobs:
+  run-system-tests:
+    if: ${{ github.event.label.name == 'trigger-system-tests' }}
+    uses: precice/tutorials/.github/workflows/system-tests.yml@develop
+    with:
+      suites: fmi-runner
+      build_args: FMI_RUNNER_PR:${{ github.event.number }},FMI_RUNNER_REF:${{ github.event.pull_request.head.sha }}
